@@ -77,9 +77,31 @@ documented separately within subsequent sections and related documents.
 
 # 3. Database Design Principles
 
-The WorkSphere platform follows modern cloud-native database design
-principles to ensure scalability, loose coupling, and long-term
-maintainability.
+The WorkSphere database architecture is designed around modern enterprise
+software engineering principles to ensure scalability, maintainability,
+security, and independent service evolution.
+
+The following principles govern every database within the platform.
+
++-----------+----------------------------------------------------------------+
+| Principle | Description                                                    |
++-----------+----------------------------------------------------------------+
+| DBP-001   | Every microservice owns its own database.                      |
+| DBP-002   | Databases never communicate directly with each other.          |
+| DBP-003   | Services communicate only through APIs or events.              |
+| DBP-004   | Every business entity follows the Base Entity standard.        |
+| DBP-005   | UUID is the standard primary key across all databases.         |
+| DBP-006   | Soft Delete is mandatory for all business entities.            |
+| DBP-007   | Business logic belongs in the application layer, not SQL.      |
+| DBP-008   | Database schema changes are managed exclusively by Flyway.     |
+| DBP-009   | Auditability and traceability are first-class requirements.    |
+| DBP-010   | Every database is independently deployable and scalable.       |
++-----------+----------------------------------------------------------------+
+
+These principles provide a common architectural foundation for all
+database design decisions within the WorkSphere platform.
+
+---
 
 ---
 
@@ -747,6 +769,32 @@ Each domain is independently deployable, independently scalable, and
 independently maintainable.
 
 The following sections describe the database design for each domain.
+
+---
+
+# Domain Catalog
+
+The following table provides a high-level overview of all business domains,
+their owning microservices, and corresponding databases.
+
++----------------------+----------------------+------------------------------+
+| Business Domain      | Database             | Owning Microservice          |
++----------------------+----------------------+------------------------------+
+| Authentication       | auth_db              | Authentication Service       |
+| User                 | user_db              | User Service                 |
+| Organization         | organization_db      | Organization Service         |
+| Workspace            | workspace_db         | Workspace Service            |
+| Project              | project_db           | Project Service              |
+| Task                 | task_db              | Task Service                 |
+| Document             | document_db          | Document Service             |
+| Notification         | notification_db      | Notification Service         |
+| Analytics            | analytics_db         | Analytics Service            |
+| Audit                | audit_db             | Audit Service                |
++----------------------+----------------------+------------------------------+
+
+Each domain is responsible for a single business capability and owns its
+database independently. Cross-domain communication is performed through
+REST APIs or asynchronous events rather than direct database access.
 
 ---
 
@@ -2059,6 +2107,34 @@ This document should be read together with the following documents:
 | 08_API_Design.md               | API specifications              |
 | Authentication.md              | Security architecture           |
 +----------------------+-------------------------------------------+
+
+---
+
+---
+
+# Architecture Decisions Used
+
+This document implements the architectural decisions defined in
+`06_Architecture_Decision_Record.md`.
+
++-----------+-------------------------------------------------------------+
+| ADR ID    | Architecture Decision                                       |
++-----------+-------------------------------------------------------------+
+| ADR-001   | Adopt Microservices Architecture                            |
+| ADR-002   | Database Per Service Pattern                                |
+| ADR-003   | Shared Schema Multi-Tenancy                                 |
+| ADR-004   | UUID as Primary Key Strategy                                |
+| ADR-005   | Base Entity for Audit Fields                                |
+| ADR-006   | Soft Delete Strategy                                        |
+| ADR-007   | Flyway Database Migration                                   |
+| ADR-008   | Redis for Distributed Caching                               |
+| ADR-009   | MinIO for Object Storage                                    |
+| ADR-010   | Event-Driven Communication Between Services                 |
++-----------+-------------------------------------------------------------+
+
+These architecture decisions ensure consistency across the system
+architecture, database design, ER diagrams, APIs, and future application
+implementation.
 
 ---
 
