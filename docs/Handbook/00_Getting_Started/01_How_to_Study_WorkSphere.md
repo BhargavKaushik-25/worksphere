@@ -72,10 +72,12 @@ Reference:
 
 ```
 docs/
-└── 01_Project_Documentation/
-    ├── 06_System_Architecture.md
-    ├── 07_Database_Design.md
-    └── 12_Deployment_Architecture.md
+├── Architecture/
+│   └── 05_System_Architecture.md
+├── Design/
+│   └── 07_Database_Design.md
+└── Deployment/
+    └── Deployment_Architecture.md
 ```
 
 ---
