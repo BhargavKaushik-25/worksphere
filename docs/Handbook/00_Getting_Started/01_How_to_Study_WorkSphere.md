@@ -27,10 +27,10 @@ Start with:
 
 ```
 docs/
-└── 01_Project_Documentation/
-    ├── 00_Project_Charter.md
-    ├── 01_Vision_Document.md
-    └── 02_Business_Requirements_Document.md
+├── 00_Project_Charter.md
+├── 01_Vision_Document.md
+└── Requirements/
+    └── 02_Business_Requirements.md
 ```
 
 ---
@@ -49,9 +49,9 @@ Reference:
 
 ```
 docs/
-└── 01_Project_Documentation/
+└── Requirements/
     ├── 03_Functional_Requirements.md
-    └── 05_Use_Case_Specification.md
+    └── 04A_Use_Cases.md
 ```
 
 ---
