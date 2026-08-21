@@ -158,51 +158,74 @@ Whenever implementation begins inside WorkSphere, the corresponding handbook cha
 
 # Handbook Structure
 
-The handbook is divided into multiple volumes.
+The WorkSphere Engineering Handbook is organized into focused engineering sections.
 
-```
-Volume 00
-Getting Started
+The current repository structure is:
 
-Volume 01
-Software Engineering
-
-Volume 02
-Backend Engineering
-
-Volume 03
-Java
-
-Volume 04
-Maven
-
-Volume 05
-Spring Framework
-
-Volume 06
-Spring Boot
-
-Volume 07
-Microservices
-
-Volume 08
-Database Engineering
-
-Volume 09
-Docker
-
-Volume 10
-Kubernetes
-
-Volume 11
-Security
-
-Volume 12
-DevOps
-
-Volume 13
-WorkSphere Implementation
-```
+```text
+Handbook/
+│
+├── 00_Getting_Started/
+│   ├── 00_Introduction.md
+│   └── 01_How_to_Study_WorkSphere.md
+│
+├── 01_Engineering_Principles/
+│   ├── 00_Engineering_Philosophy.md
+│   ├── 01_Coding_Principles.md
+│   ├── 02_Code_Review_Guidelines.md
+│   └── 03_Git_Workflow_and_Branching.md
+│
+├── 02_Project_Architecture/
+│   ├── 00_Architecture_Overview.md
+│   ├── 01_System_Component_Responsibilities.md
+│   ├── 02_Component_Communication.md
+│   ├── 03_Architecture_Decision_Records.md
+│   └── 04_Architectural_Principles.md
+│
+├── 03_Backend_Development/
+│   ├── 00_Backend_Overview.md
+│   ├── 01_Project_Structure.md
+│   ├── 02_Controller_Layer.md
+│   ├── 03_Service_Layer.md
+│   ├── 04_Repository_Layer.md
+│   ├── 05_Entity_Layer.md
+│   ├── 06_DTO_Layer.md
+│   ├── 07_Exception_Handling.md
+│   ├── 08_Validation.md
+│   ├── 09_Security_Integration.md
+│   ├── 10_Configuration_Management.md
+│   ├── 11_Logging_and_Observability.md
+│   └── 12_Backend_Testing.md
+│
+├── 04_Frontend_Development/
+│   ├── 00_Frontend_Overview.md
+│   ├── 01_Frontend_Project_Structure.md
+│   ├── 02_Component_Architecture.md
+│   ├── 03_State_Management.md
+│   ├── 04_API_Integration.md
+│   ├── 05_Routing_and_Navigation.md
+│   ├── 06_Forms_and_Validation.md
+│   ├── 07_Authentication_and_Authorization.md
+│   ├── 08_Error_Handling_and_Logging.md
+│   ├── 09_Frontend_Testing.md
+│   ├── 10_Frontend_Security.md
+│   ├── 11_Frontend_Performance_and_Optimization.md
+│   ├── 12_Frontend_Testing_and_Quality.md
+│   └── 13_Frontend_Accessibility.md
+│
+└── 05_Testing_and_Quality/
+    ├── 00_Testing_and_Quality_Overview.md
+    ├── 01_Testing_Strategy.md
+    ├── 02_Unit_Testing.md
+    ├── 03_Integration_Testing.md
+    ├── 04_Security_Testing.md
+    ├── 05_Performance_Testing.md
+    ├── 06_Test_Automation.md
+    ├── 08_Test_Reporting_and_Metrics.md
+    ├── 09_Defect_Management_and_Tracking.md
+    ├── 13_Testing_Best_Practices_and_Anti_Patterns.md
+    ├── 14_Test_Data_Management.md
+    └── 15_Test_Environment_and_Configuration.md
 
 ---
 
