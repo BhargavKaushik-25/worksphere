@@ -1563,14 +1563,14 @@ A recommended structure is:
 ├── 01_Testing_Strategy.md
 ├── 02_Unit_Testing.md
 ├── 03_Integration_Testing.md
-├── 04_End_to_End_Testing.md
-├── 05_API_Testing.md
-├── 06_Performance_Testing.md
-├── 07_Security_Testing.md
-├── 08_Test_Automation.md
-├── 09_Defect_Management.md
-├── 10_Release_Quality_Checklist.md
-└── 11_Testing_Metrics_and_Reporting.md
+├── 04_Security_Testing.md
+├── 05_Performance_Testing.md
+├── 06_Test_Automation.md
+├── 08_Test_Reporting_and_Metrics.md
+├── 09_Defect_Management_and_Tracking.md
+├── 13_Testing_Best_Practices_and_Anti_Patterns.md
+├── 14_Test_Data_Management.md
+└── 15_Test_Environment_and_Configuration.md
 
 The exact document structure may evolve as the project progresses.
 
