@@ -2623,7 +2623,7 @@ WorkSphere uses event-driven architecture.
 Technology:
 
 ```
-Apache Kafka
+RabbitMQ
 ```
 
 ---
@@ -3019,7 +3019,7 @@ TASK_CREATED Event
 
  |
 
-Kafka
+RabbitMQ
 
  |
 
