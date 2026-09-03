@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: ${AUTH_SERVICE_NAME:auth-service}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/worksphere_auth}
+    username: ${AUTH_DB_USERNAME:worksphere}
+    password: ${AUTH_DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: ${AUTH_FLYWAY_ENABLED:true}
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/worksphere_auth}
+    user: ${AUTH_DB_USERNAME:worksphere}
+    password: ${AUTH_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${AUTH_JPA_DDL_AUTO:validate}
+    properties:
+      hibernate:
+        format_sql: ${AUTH_JPA_FORMAT_SQL:false}
+
+server:
+  port: ${AUTH_SERVICE_PORT:8081}
+
+auth:
+  jwt:
+    secret: ${AUTH_JWT_SECRET:}
+    access-token-expiration: ${AUTH_JWT_ACCESS_EXPIRATION:PT15M}
+    refresh-token-expiration: ${AUTH_JWT_REFRESH_EXPIRATION:P7D}
+  lockout:
+    max-failed-attempts: ${AUTH_LOCKOUT_MAX_FAILED_ATTEMPTS:5}
+    duration: ${AUTH_LOCKOUT_DURATION:PT15M}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${AUTH_ACTUATOR_ENDPOINTS:health,info}
+  endpoint:
+    health:
+      probes:
+        enabled: ${AUTH_ACTUATOR_PROBES:true}
