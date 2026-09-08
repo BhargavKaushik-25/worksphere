@@ -13,6 +13,7 @@ import com.nexoralabs.worksphere.auth.security.JwtAuthenticationFilter;
 import com.nexoralabs.worksphere.auth.security.JwtService;
 import com.nexoralabs.worksphere.auth.service.AuthService;
 import java.util.UUID;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,9 +26,20 @@ import org.springframework.test.web.servlet.MockMvc;
     JsonAuthenticationEntryPoint.class, JsonAccessDeniedHandler.class})
 class AuthSecurityControllerTest {
     @Autowired MockMvc mvc;
+    @Autowired JwtService jwtService;
     @MockBean AuthService authService;
+
     @Test void meRequiresValidJwtAuthentication() throws Exception {
         mvc.perform(get("/api/v1/auth/me")).andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorCode").value("UNAUTHORIZED"));
+    }
+
+    @Test void meAcceptsValidJwtAuthentication() throws Exception {
+        UUID userId = UUID.randomUUID();
+        when(authService.me(userId)).thenReturn(new AuthDtos.UserResponse(userId, "user@example.com", "user", List.of("USER")));
+        String token = jwtService.generateAccessToken(userId, "user@example.com", List.of("USER"));
+
+        mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.email").value("user@example.com"));
     }
 }

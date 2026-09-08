@@ -1,6 +1,7 @@
 package com.nexoralabs.worksphere.auth.api;
 
 import com.nexoralabs.worksphere.auth.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
@@ -26,5 +27,6 @@ public class AuthController {
     }
 
     @GetMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
     public AuthDtos.UserResponse me(Authentication authentication) { return authService.me((UUID) authentication.getPrincipal()); }
 }
