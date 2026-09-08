@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ${PROJECT_SERVICE_NAME:project-service}
+
+server:
+  port: ${PROJECT_SERVICE_PORT:8083}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${PROJECT_ACTUATOR_ENDPOINTS:health,info}
+  endpoint:
+    health:
+      probes:
+        enabled: ${PROJECT_ACTUATOR_PROBES:true}
+
+logging:
+  level:
+    root: ${PROJECT_LOG_LEVEL:INFO}

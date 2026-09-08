@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ${TASK_SERVICE_NAME:task-service}
+
+server:
+  port: ${TASK_SERVICE_PORT:8084}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${TASK_ACTUATOR_ENDPOINTS:health,info}
+  endpoint:
+    health:
+      probes:
+        enabled: ${TASK_ACTUATOR_PROBES:true}
+
+logging:
+  level:
+    root: ${TASK_LOG_LEVEL:INFO}
