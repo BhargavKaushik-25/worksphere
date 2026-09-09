@@ -46,10 +46,15 @@ public class AuthService {
         if (user == null) { audit(request.email(), null, false, "INVALID_CREDENTIALS"); throw invalid(); }
         Instant now = Instant.now();
         if (user.getAccountStatus() == AccountStatus.LOCKED && user.getLockedUntil() != null
-                && user.getLockedUntil().isAfter(now)) throw new AuthException("ACCOUNT_LOCKED", "Account is locked", 423);
+                && user.getLockedUntil().isAfter(now)) {
+            audit(request.email(), user, false, "ACCOUNT_LOCKED");
+            throw new AuthException("ACCOUNT_LOCKED", "Account is locked", 423);
+        }
         if (user.getAccountStatus() == AccountStatus.LOCKED) { user.setAccountStatus(AccountStatus.ACTIVE); user.setLockedUntil(null); }
-        if (!user.isEnabled() || user.getAccountStatus() == AccountStatus.INACTIVE)
+        if (!user.isEnabled() || user.getAccountStatus() == AccountStatus.INACTIVE) {
+            audit(request.email(), user, false, "ACCOUNT_INACTIVE");
             throw new AuthException("ACCOUNT_INACTIVE", "Account is inactive", 403);
+        }
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             recordFailure(user, request.email()); throw invalid();
         }
@@ -61,6 +66,24 @@ public class AuthService {
         RefreshToken refresh = new RefreshToken(); refresh.setUser(user); refresh.setTokenHash(hash(rawRefresh));
         refresh.setExpiresAt(now.plus(properties.getJwt().getRefreshTokenExpiration())); refreshTokens.save(refresh);
         return new AuthDtos.TokenResponse(accessToken, rawRefresh, properties.getJwt().getAccessTokenExpiration().toSeconds());
+    }
+
+    @Transactional
+    public AuthDtos.TokenResponse refresh(AuthDtos.RefreshRequest request) {
+        RefreshToken existing = refreshTokens.findByTokenHash(hash(request.refreshToken()))
+                .orElseThrow(() -> new AuthException("INVALID_REFRESH_TOKEN", "Invalid refresh token", 401));
+        Instant now = Instant.now();
+        if (existing.getRevokedAt() != null || !existing.getExpiresAt().isAfter(now)) {
+            throw new AuthException("INVALID_REFRESH_TOKEN", "Invalid refresh token", 401);
+        }
+        AuthUser user = existing.getUser();
+        if (!user.isEnabled() || user.getAccountStatus() != AccountStatus.ACTIVE) {
+            throw new AuthException("ACCOUNT_UNAVAILABLE", "Account is not available", 403);
+        }
+        existing.setRevokedAt(now);
+        refreshTokens.save(existing);
+        List<String> roles = userRoles.findRoleNames(user.getId());
+        return issueTokens(user, roles, now);
     }
 
     @Transactional
@@ -86,6 +109,17 @@ public class AuthService {
     private void audit(String email, AuthUser user, boolean successful, String reason) {
         LoginAttempt attempt = new LoginAttempt(); attempt.setEmail(email); attempt.setUser(user);
         attempt.setSuccessful(successful); attempt.setFailureReason(reason); attempts.save(attempt);
+    }
+    private AuthDtos.TokenResponse issueTokens(AuthUser user, List<String> roles, Instant now) {
+        String accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail(), roles);
+        String rawRefresh = randomToken();
+        RefreshToken refresh = new RefreshToken();
+        refresh.setUser(user);
+        refresh.setTokenHash(hash(rawRefresh));
+        refresh.setExpiresAt(now.plus(properties.getJwt().getRefreshTokenExpiration()));
+        refreshTokens.save(refresh);
+        return new AuthDtos.TokenResponse(accessToken, rawRefresh,
+                properties.getJwt().getAccessTokenExpiration().toSeconds());
     }
     private AuthException invalid() { return new AuthException("INVALID_CREDENTIALS", "Invalid email or password", 401); }
     private String randomToken() { byte[] bytes = new byte[48]; secureRandom.nextBytes(bytes); return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes); }

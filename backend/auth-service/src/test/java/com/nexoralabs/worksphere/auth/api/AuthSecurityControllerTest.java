@@ -40,6 +40,20 @@ class AuthSecurityControllerTest {
         String token = jwtService.generateAccessToken(userId, "user@example.com", List.of("USER"));
 
         mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.email").value("user@example.com"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data.email").value("user@example.com"));
+    }
+
+    @Test void accessTokenContainsRequiredIdentityClaims() {
+        UUID userId = UUID.randomUUID();
+        String token = jwtService.generateAccessToken(userId, "user@example.com", List.of("USER"));
+
+        var claims = jwtService.parse(token);
+        org.junit.jupiter.api.Assertions.assertEquals(userId.toString(), claims.getSubject());
+        org.junit.jupiter.api.Assertions.assertEquals(userId.toString(), claims.get("userId", String.class));
+        org.junit.jupiter.api.Assertions.assertNotNull(claims.getId());
+        org.junit.jupiter.api.Assertions.assertNotNull(claims.getIssuedAt());
+        org.junit.jupiter.api.Assertions.assertNotNull(claims.getExpiration());
     }
 }

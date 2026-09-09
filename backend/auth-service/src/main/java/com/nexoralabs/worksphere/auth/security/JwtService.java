@@ -30,9 +30,17 @@ public class JwtService {
     }
 
     public String generateAccessToken(UUID userId, String email, List<String> roles) {
+        return generateAccessToken(userId, null, email, roles);
+    }
+
+    public String generateAccessToken(UUID userId, UUID organizationId, String email, List<String> roles) {
         Instant now = Instant.now();
-        return Jwts.builder().subject(userId.toString()).claim("email", email).claim("roles", roles)
-                .id(UUID.randomUUID().toString()).issuedAt(Date.from(now))
+        var builder = Jwts.builder().subject(userId.toString()).claim("userId", userId.toString())
+                .claim("email", email).claim("roles", roles).id(UUID.randomUUID().toString()).issuedAt(Date.from(now));
+        if (organizationId != null) {
+            builder.claim("organizationId", organizationId.toString());
+        }
+        return builder
                 .expiration(Date.from(now.plus(properties.getJwt().getAccessTokenExpiration())))
                 .signWith(signingKey).compact();
     }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+import com.nexoralabs.worksphere.shared.api.ApiErrorResponse;
+import java.time.Instant;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -17,7 +19,7 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
     @Override public void handle(HttpServletRequest request, HttpServletResponse response,
             AccessDeniedException exception) throws IOException {
         response.setStatus(403); response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        mapper.writeValue(response.getOutputStream(), Map.of("success", false,
-                "errorCode", "FORBIDDEN", "message", "Access denied"));
+        mapper.writeValue(response.getOutputStream(), new ApiErrorResponse(false, "FORBIDDEN",
+            "Access denied", Instant.now(), 403, request.getRequestURI(), List.of()));
     }
 }

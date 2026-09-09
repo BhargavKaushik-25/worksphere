@@ -5,11 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import com.nexoralabs.worksphere.auth.api.AuthDtos;
 import com.nexoralabs.worksphere.auth.config.AuthProperties;
 import com.nexoralabs.worksphere.auth.domain.AccountStatus;
 import com.nexoralabs.worksphere.auth.domain.AuthUser;
+import com.nexoralabs.worksphere.auth.domain.RefreshToken;
 import com.nexoralabs.worksphere.auth.repository.AuthUserRepository;
 import com.nexoralabs.worksphere.auth.repository.AuthUserRoleRepository;
 import com.nexoralabs.worksphere.auth.repository.LoginAttemptRepository;
@@ -68,6 +70,22 @@ class AuthServiceTest {
         AuthDtos.UserResponse response = service.me(user.getId());
         assertEquals(user.getEmail(), response.email());
         org.junit.jupiter.api.Assertions.assertFalse(java.util.Arrays.stream(response.getClass().getRecordComponents()).anyMatch(c -> c.getName().toLowerCase().contains("password")));
+    }
+
+    @Test void refreshRotatesValidRefreshToken() {
+        AuthUser user = user(AccountStatus.ACTIVE, true);
+        RefreshToken existing = new RefreshToken();
+        existing.setUser(user);
+        existing.setExpiresAt(java.time.Instant.now().plusSeconds(60));
+        when(refreshTokens.findByTokenHash(anyString())).thenReturn(Optional.of(existing));
+        when(userRoles.findRoleNames(user.getId())).thenReturn(List.of("USER"));
+        when(jwtService.generateAccessToken(any(), anyString(), any())).thenReturn("new-access");
+
+        AuthDtos.TokenResponse response = service.refresh(new AuthDtos.RefreshRequest("raw-refresh"));
+
+        assertEquals("new-access", response.accessToken());
+        org.junit.jupiter.api.Assertions.assertNotNull(existing.getRevokedAt());
+        verify(refreshTokens, org.mockito.Mockito.times(2)).save(any(RefreshToken.class));
     }
 
     private AuthUser user(AccountStatus status, boolean enabled) {

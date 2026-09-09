@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+import com.nexoralabs.worksphere.shared.api.ApiErrorResponse;
+import java.time.Instant;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -17,7 +19,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException {
         response.setStatus(401); response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        mapper.writeValue(response.getOutputStream(), Map.of("success", false,
-                "errorCode", "UNAUTHORIZED", "message", "Authentication is required"));
+        mapper.writeValue(response.getOutputStream(), new ApiErrorResponse(false, "UNAUTHORIZED",
+            "Authentication is required", Instant.now(), 401, request.getRequestURI(), List.of()));
     }
 }

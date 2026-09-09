@@ -9,6 +9,7 @@ public final class AuthDtos {
     private AuthDtos() { }
     public record LoginRequest(@NotBlank @Email String email, @NotBlank String password) { }
     public record LogoutRequest(@NotBlank String refreshToken) { }
+    public record RefreshRequest(@NotBlank String refreshToken) { }
     public record TokenResponse(String accessToken, String refreshToken, long expiresIn) { }
     public record UserResponse(UUID id, String email, String username, List<String> roles) { }
 }
