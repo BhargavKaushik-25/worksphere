@@ -1,6 +1,23 @@
 spring:
   application:
     name: ${PROJECT_SERVICE_NAME:project-service}
+  datasource:
+    url: ${PROJECT_DB_URL:jdbc:postgresql://localhost:5432/worksphere_project}
+    username: ${PROJECT_DB_USERNAME:worksphere}
+    password: ${PROJECT_DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: ${PROJECT_FLYWAY_ENABLED:true}
+    url: ${PROJECT_DB_URL:jdbc:postgresql://localhost:5432/worksphere_project}
+    user: ${PROJECT_DB_USERNAME:worksphere}
+    password: ${PROJECT_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${PROJECT_JPA_DDL_AUTO:validate}
+    properties:
+      hibernate:
+        format_sql: ${PROJECT_JPA_FORMAT_SQL:false}
 
 server:
   port: ${PROJECT_SERVICE_PORT:8083}
